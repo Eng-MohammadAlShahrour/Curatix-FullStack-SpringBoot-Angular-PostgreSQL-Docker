@@ -1,5 +1,6 @@
 package com.curatix.museumloan.notification;
 
+import com.curatix.museumloan.webhook.WebhookService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,16 +15,23 @@ public class LoanEventListener {
     private static final Logger log = LoggerFactory.getLogger(LoanEventListener.class);
 
     private final EmailService emailService;
+    private final WebhookService webhookService;
 
     @EventListener
     @Async
     public void onLoanEvent(LoanEvent event) {
-        log.info("📣 Handling {} for loan #{} → email to {}",
-                event.type(), event.loanId(), event.recipientEmail());
+        log.info("📣 Handling {} for loan #{}", event.type(), event.loanId());
+
         try {
             emailService.sendLoanEmail(event);
         } catch (Exception ex) {
-            log.warn("Email listener failed for loan #{}: {}", event.loanId(), ex.getMessage());
+            log.warn("Email listener failed: {}", ex.getMessage());
+        }
+
+        try {
+            webhookService.dispatch(event);
+        } catch (Exception ex) {
+            log.warn("Webhook dispatch failed: {}", ex.getMessage());
         }
     }
 }
