@@ -6,6 +6,7 @@ import com.curatix.museumloan.museum.MuseumRepository;
 import com.curatix.museumloan.notification.LoanEvent;
 import com.curatix.museumloan.notification.LoanEventPublisher;
 import com.curatix.museumloan.notification.LoanEventType;
+import com.curatix.museumloan.metrics.LoanMetrics;
 import com.curatix.museumloan.user.User;
 import com.curatix.museumloan.user.UserRepository;
 import com.curatix.museumloan.user.UserRole;
@@ -28,6 +29,7 @@ public class LoanService {
     private final MuseumRepository museumRepository;
     private final UserRepository userRepository;
     private final LoanEventPublisher eventPublisher;
+    private final LoanMetrics loanMetrics;
 
     public List<LoanDto> listAll() {
         return loanRepository.findAll().stream().map(LoanDto::from).toList();
@@ -67,6 +69,7 @@ public class LoanService {
                 .notes(req.notes())
                 .build();
         loanRepository.save(loan);
+        loanMetrics.recordLoanCreated();
         publishLoanEvent(LoanEventType.LOAN_CREATED, loan);
         return LoanDto.from(loan);
     }
@@ -80,6 +83,7 @@ public class LoanService {
         a.setStatus("RESERVED");
         artifactRepository.save(a);
         LoanRequest saved = loanRepository.save(loan);
+        loanMetrics.recordTransition(LoanStatus.APPROVED);
         publishLoanEvent(LoanEventType.LOAN_APPROVED, saved);
         return LoanDto.from(saved);
     }
@@ -90,6 +94,7 @@ public class LoanService {
         requireStatus(loan, LoanStatus.PENDING);
         loan.setStatus(LoanStatus.REJECTED);
         LoanRequest saved = loanRepository.save(loan);
+        loanMetrics.recordTransition(LoanStatus.REJECTED);
         publishLoanEvent(LoanEventType.LOAN_REJECTED, saved);
         return LoanDto.from(saved);
     }
@@ -104,6 +109,7 @@ public class LoanService {
         a.setStatus("ON_LOAN");
         artifactRepository.save(a);
         LoanRequest saved = loanRepository.save(loan);
+        loanMetrics.recordTransition(LoanStatus.SHIPPED);
         publishLoanEvent(LoanEventType.LOAN_SHIPPED, saved);
         return LoanDto.from(saved);
     }
@@ -118,6 +124,7 @@ public class LoanService {
         a.setStatus("AVAILABLE");
         artifactRepository.save(a);
         LoanRequest saved = loanRepository.save(loan);
+        loanMetrics.recordTransition(LoanStatus.RETURNED);
         publishLoanEvent(LoanEventType.LOAN_RETURNED, saved);
         return LoanDto.from(saved);
     }
