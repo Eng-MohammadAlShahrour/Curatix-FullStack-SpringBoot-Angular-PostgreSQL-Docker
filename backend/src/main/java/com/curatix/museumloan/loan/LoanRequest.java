@@ -1,13 +1,17 @@
 package com.curatix.museumloan.loan;
 
+import com.curatix.museumloan.audit.AuditableEntityListener;
+
 import com.curatix.museumloan.artifact.Artifact;
 import com.curatix.museumloan.museum.Museum;
 import com.curatix.museumloan.user.User;
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.*;
 import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditableEntityListener.class)
 @Table(name = "loan_requests")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class LoanRequest {

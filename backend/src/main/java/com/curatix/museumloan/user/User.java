@@ -1,10 +1,14 @@
 package com.curatix.museumloan.user;
 
+import com.curatix.museumloan.audit.AuditableEntityListener;
+
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.*;
 import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditableEntityListener.class)
 @Table(name = "users")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {

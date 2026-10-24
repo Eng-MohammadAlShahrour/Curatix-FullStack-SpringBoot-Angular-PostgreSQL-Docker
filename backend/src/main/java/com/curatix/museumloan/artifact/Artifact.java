@@ -1,11 +1,15 @@
 package com.curatix.museumloan.artifact;
 
+import com.curatix.museumloan.audit.AuditableEntityListener;
+
 import com.curatix.museumloan.museum.Museum;
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.*;
 import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditableEntityListener.class)
 @Table(name = "artifacts")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Artifact {
