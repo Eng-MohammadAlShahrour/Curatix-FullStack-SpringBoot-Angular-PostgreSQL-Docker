@@ -11,7 +11,6 @@ import { LogoComponent } from '../logo/logo.component';
   template: `
     <div class="min-h-screen bg-cream">
 
-      <!-- Mobile top bar -->
       <header class="lg:hidden sticky top-0 z-40 bg-navy-900 text-white px-4 py-3 flex items-center justify-between shadow-md">
         <div class="flex items-center gap-2.5">
           <app-logo [size]="28"></app-logo>
@@ -36,14 +35,12 @@ import { LogoComponent } from '../logo/logo.component';
         </button>
       </header>
 
-      <!-- Overlay -->
       @if (menuOpen()) {
         <div (click)="menuOpen.set(false)"
              class="lg:hidden fixed inset-0 bg-navy-900/60 z-40 backdrop-blur-sm"></div>
       }
 
       <div class="flex">
-        <!-- Sidebar -->
         <aside
           class="fixed lg:sticky top-0 left-0 bottom-0 lg:top-0 lg:h-screen w-72 bg-navy-900 text-white z-50
                  transition-transform duration-300 flex flex-col shrink-0"
@@ -109,6 +106,24 @@ import { LogoComponent } from '../logo/logo.component';
               </svg>
               Loans
             </a>
+
+            @if (auth.hasRole('ADMIN')) {
+              <div class="px-3 py-2 mt-3 text-[10px] uppercase tracking-widest text-white/40 font-medium">
+                Administration
+              </div>
+              <a routerLink="/admin/users" routerLinkActive="bg-white/10 text-white"
+                 (click)="menuOpen.set(false)"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/80
+                        hover:bg-white/5 hover:text-white transition-all">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                Users
+              </a>
+            }
           </nav>
 
           <div class="p-3 border-t border-white/10">
@@ -134,7 +149,6 @@ import { LogoComponent } from '../logo/logo.component';
           </div>
         </aside>
 
-        <!-- Main -->
         <main class="flex-1 min-w-0">
           <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
             <router-outlet />
