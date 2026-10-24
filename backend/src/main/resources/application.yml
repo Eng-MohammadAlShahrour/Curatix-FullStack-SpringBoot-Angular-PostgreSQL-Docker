@@ -50,3 +50,14 @@ springdoc:
     filter: true
     displayRequestDuration: true
   show-actuator: true
+spring.mail:
+  host: localhost
+  port: 1025
+  username: no-reply@curatix.test
+  properties:
+    mail.smtp.auth: false
+    mail.smtp.starttls.enable: false
+
+curatix:
+  email:
+    enabled: false

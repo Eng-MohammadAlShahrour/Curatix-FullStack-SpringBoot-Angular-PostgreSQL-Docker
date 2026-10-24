@@ -3,10 +3,15 @@ package com.curatix.museumloan.loan;
 import com.curatix.museumloan.artifact.Artifact;
 import com.curatix.museumloan.artifact.ArtifactRepository;
 import com.curatix.museumloan.museum.MuseumRepository;
+import com.curatix.museumloan.notification.LoanEvent;
+import com.curatix.museumloan.notification.LoanEventPublisher;
+import com.curatix.museumloan.notification.LoanEventType;
 import com.curatix.museumloan.user.User;
 import com.curatix.museumloan.user.UserRepository;
 import com.curatix.museumloan.user.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +21,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LoanService {
 
+    private static final Logger log = LoggerFactory.getLogger(LoanService.class);
+
     private final LoanRequestRepository loanRepository;
     private final ArtifactRepository artifactRepository;
     private final MuseumRepository museumRepository;
     private final UserRepository userRepository;
+    private final LoanEventPublisher eventPublisher;
 
     public List<LoanDto> listAll() {
         return loanRepository.findAll().stream().map(LoanDto::from).toList();
@@ -32,8 +40,6 @@ public class LoanService {
     public LoanDto get(Long id) {
         return LoanDto.from(find(id));
     }
-
-    // ---- State machine ----
 
     @Transactional
     public LoanDto create(LoanCreateRequest req, Long userId) {
@@ -61,6 +67,7 @@ public class LoanService {
                 .notes(req.notes())
                 .build();
         loanRepository.save(loan);
+        publishLoanEvent(LoanEventType.LOAN_CREATED, loan);
         return LoanDto.from(loan);
     }
 
@@ -69,11 +76,12 @@ public class LoanService {
         LoanRequest loan = find(loanId);
         requireStatus(loan, LoanStatus.PENDING);
         loan.setStatus(LoanStatus.APPROVED);
-        // Mark artifact as RESERVED
         Artifact a = loan.getArtifact();
         a.setStatus("RESERVED");
         artifactRepository.save(a);
-        return LoanDto.from(loanRepository.save(loan));
+        LoanRequest saved = loanRepository.save(loan);
+        publishLoanEvent(LoanEventType.LOAN_APPROVED, saved);
+        return LoanDto.from(saved);
     }
 
     @Transactional
@@ -81,7 +89,9 @@ public class LoanService {
         LoanRequest loan = find(loanId);
         requireStatus(loan, LoanStatus.PENDING);
         loan.setStatus(LoanStatus.REJECTED);
-        return LoanDto.from(loanRepository.save(loan));
+        LoanRequest saved = loanRepository.save(loan);
+        publishLoanEvent(LoanEventType.LOAN_REJECTED, saved);
+        return LoanDto.from(saved);
     }
 
     @Transactional
@@ -93,7 +103,9 @@ public class LoanService {
         Artifact a = loan.getArtifact();
         a.setStatus("ON_LOAN");
         artifactRepository.save(a);
-        return LoanDto.from(loanRepository.save(loan));
+        LoanRequest saved = loanRepository.save(loan);
+        publishLoanEvent(LoanEventType.LOAN_SHIPPED, saved);
+        return LoanDto.from(saved);
     }
 
     @Transactional
@@ -105,10 +117,10 @@ public class LoanService {
         Artifact a = loan.getArtifact();
         a.setStatus("AVAILABLE");
         artifactRepository.save(a);
-        return LoanDto.from(loanRepository.save(loan));
+        LoanRequest saved = loanRepository.save(loan);
+        publishLoanEvent(LoanEventType.LOAN_RETURNED, saved);
+        return LoanDto.from(saved);
     }
-
-    // ---- Helpers ----
 
     private LoanRequest find(Long id) {
         return loanRepository.findById(id)
@@ -128,6 +140,23 @@ public class LoanService {
         if (u.getRole() != UserRole.MUSEUM || u.getMuseumId() == null
                 || !u.getMuseumId().equals(expectedMuseumId)) {
             throw new IllegalArgumentException(msg);
+        }
+    }
+
+    private void publishLoanEvent(LoanEventType type, LoanRequest loan) {
+        try {
+            User borrower = loan.getRequestedBy();
+            eventPublisher.publish(new LoanEvent(
+                    type,
+                    loan.getId(),
+                    loan.getArtifact().getName(),
+                    loan.getFromMuseum().getName(),
+                    loan.getToMuseum().getName(),
+                    borrower.getEmail(),
+                    borrower.getFullName()
+            ));
+        } catch (Exception ex) {
+            log.warn("Failed to publish loan event {} for #{}: {}", type, loan.getId(), ex.getMessage());
         }
     }
 }
