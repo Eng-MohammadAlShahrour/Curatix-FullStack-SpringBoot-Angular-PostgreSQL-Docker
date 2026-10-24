@@ -1,0 +1,27 @@
+﻿# Documentation & configs (not code)
+*.md linguist-documentation
+docs/** linguist-documentation
+docker-compose.yml linguist-documentation
+*.yml linguist-documentation
+*.yaml linguist-documentation
+.gitignore linguist-documentation
+.gitattributes linguist-documentation
+
+# Generated files
+frontend/package-lock.json linguist-generated
+frontend/angular.json linguist-generated
+frontend/.angular/** linguist-generated
+backend/mvnw linguist-generated
+backend/mvnw.cmd linguist-generated
+
+# Angular test specs (unused — tests skipped)
+frontend/**/*.spec.ts linguist-generated
+frontend/karma.conf.js linguist-generated
+
+# Angular config files (not real source)
+frontend/tsconfig*.json linguist-documentation
+frontend/.editorconfig linguist-documentation
+frontend/.browserslistrc linguist-documentation
+
+# Line endings
+* text=auto eol=lf

@@ -1,0 +1,41 @@
+﻿services:
+  db:
+    image: postgres:16-alpine
+    container_name: curatix-db
+    environment:
+      POSTGRES_USER: curatix
+      POSTGRES_PASSWORD: curatix_secret_2026
+      POSTGRES_DB: curatix
+    ports:
+      - "5433:5432"
+    volumes:
+      - curatix_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U curatix"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: curatix-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/curatix
+      SPRING_DATASOURCE_USERNAME: curatix
+      SPRING_DATASOURCE_PASSWORD: curatix_secret_2026
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: curatix-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  curatix_pgdata:

@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: museum-loan
+  datasource:
+    url: jdbc:postgresql://db:5432/curatix
+    username: curatix
+    password: curatix_secret_2026
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+jwt:
+  secret: curatix-dev-secret-change-in-production-please-use-strong-key-here
+  expiration-ms: 86400000
+
+logging:
+  level:
+    com.curatix: INFO
+    org.springframework.security: WARN
