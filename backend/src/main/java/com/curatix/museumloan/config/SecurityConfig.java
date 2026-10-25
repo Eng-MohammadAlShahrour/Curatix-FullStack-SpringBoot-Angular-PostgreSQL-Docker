@@ -4,6 +4,7 @@ import com.curatix.museumloan.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,6 +28,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Public endpoints
                 .requestMatchers(
                         "/api/public/**",
                         "/api/auth/**",
@@ -39,6 +41,13 @@ public class SecurityConfig {
                         "/actuator/prometheus",
                         "/actuator/metrics"
                 ).permitAll()
+                // READ endpoints — public (view-only data)
+                .requestMatchers(HttpMethod.GET,
+                        "/api/museums/**",
+                        "/api/artifacts/**",
+                        "/api/loans/**"
+                ).permitAll()
+                // Everything else requires auth
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
