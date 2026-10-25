@@ -26,43 +26,61 @@ public class LoanController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Long id) {
-        try { return ResponseEntity.ok(loanService.get(id)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.notFound().build(); }
+        try {
+            return ResponseEntity.ok(loanService.get(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> create(@Valid @RequestBody LoanCreateRequest req,
                                      @AuthenticationPrincipal Long userId) {
-        try { return ResponseEntity.ok(loanService.create(req, userId)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.badRequest().body(Map.of("error", e.getMessage())); }
+        try {
+            return ResponseEntity.ok(loanService.create(req, userId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PatchMapping("/{id}/approve")
     @PreAuthorize("hasRole('REVIEWER')")
     public ResponseEntity<?> approve(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
-        try { return ResponseEntity.ok(loanService.approve(id, userId)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.badRequest().body(Map.of("error", e.getMessage())); }
+        try {
+            return ResponseEntity.ok(loanService.approve(id, userId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PatchMapping("/{id}/reject")
     @PreAuthorize("hasRole('REVIEWER')")
     public ResponseEntity<?> reject(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
-        try { return ResponseEntity.ok(loanService.reject(id, userId)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.badRequest().body(Map.of("error", e.getMessage())); }
+        try {
+            return ResponseEntity.ok(loanService.reject(id, userId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PatchMapping("/{id}/ship")
     @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> ship(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
-        try { return ResponseEntity.ok(loanService.ship(id, userId)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.badRequest().body(Map.of("error", e.getMessage())); }
+        try {
+            return ResponseEntity.ok(loanService.ship(id, userId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PatchMapping("/{id}/return")
     @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> returnArtifact(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
-        try { return ResponseEntity.ok(loanService.returnArtifact(id, userId)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.badRequest().body(Map.of("error", e.getMessage())); }
+        try {
+            return ResponseEntity.ok(loanService.returnArtifact(id, userId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }

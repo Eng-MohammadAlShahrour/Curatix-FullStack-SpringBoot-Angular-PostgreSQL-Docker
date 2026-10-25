@@ -26,15 +26,21 @@ public class ArtifactController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Long id) {
-        try { return ResponseEntity.ok(artifactService.get(id)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.notFound().build(); }
+        try {
+            return ResponseEntity.ok(artifactService.get(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> create(@Valid @RequestBody ArtifactCreateRequest req,
                                      @AuthenticationPrincipal Long userId) {
-        try { return ResponseEntity.ok(artifactService.create(req, userId)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.badRequest().body(Map.of("error", e.getMessage())); }
+        try {
+            return ResponseEntity.ok(artifactService.create(req, userId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }

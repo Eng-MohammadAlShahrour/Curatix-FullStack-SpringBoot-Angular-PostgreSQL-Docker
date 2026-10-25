@@ -22,8 +22,11 @@ public class MuseumController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Long id) {
-        try { return ResponseEntity.ok(museumService.get(id)); }
-        catch (IllegalArgumentException e) { return ResponseEntity.notFound().build(); }
+        try {
+            return ResponseEntity.ok(museumService.get(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
