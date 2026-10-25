@@ -18,7 +18,7 @@
 
 </div>
 
-<p align="center"><img src="docs/screenshots/02-dashboard.png" alt="Curatix Dashboard" width="100%"/></p>
+<p align="center"><img src="docs/screenshots/dashboard-gif.gif" alt="Curatix Dashboard Demo" width="100%"/></p>
 
 ---
 
