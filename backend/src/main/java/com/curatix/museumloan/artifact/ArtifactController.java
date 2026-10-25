@@ -3,7 +3,6 @@ package com.curatix.museumloan.artifact;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,6 @@ public class ArtifactController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> create(@Valid @RequestBody ArtifactCreateRequest req,
                                      @AuthenticationPrincipal Long userId) {
         try {

@@ -1,4 +1,4 @@
-package com.curatix.museumloan.config;
+﻿package com.curatix.museumloan.config;
 
 import com.curatix.museumloan.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +41,17 @@ public class SecurityConfig {
                         "/actuator/prometheus",
                         "/actuator/metrics"
                 ).permitAll()
-                // READ endpoints — public (view-only data)
-                .requestMatchers(HttpMethod.GET,
-                        "/api/museums/**",
-                        "/api/artifacts/**",
-                        "/api/loans/**"
-                ).permitAll()
-                // Everything else requires auth
+                // Write operations — URL-based role enforcement
+                .requestMatchers(HttpMethod.POST, "/api/museums").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/artifacts").hasRole("MUSEUM")
+                .requestMatchers(HttpMethod.POST, "/api/loans").hasRole("MUSEUM")
+                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/approve").hasRole("REVIEWER")
+                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/reject").hasRole("REVIEWER")
+                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/ship").hasRole("MUSEUM")
+                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/return").hasRole("MUSEUM")
+                // Admin endpoints (class-level @PreAuthorize still enforced)
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // Everything else requires authentication
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

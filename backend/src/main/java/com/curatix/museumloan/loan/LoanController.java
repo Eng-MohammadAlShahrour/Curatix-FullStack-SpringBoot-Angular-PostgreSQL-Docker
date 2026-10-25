@@ -3,7 +3,6 @@ package com.curatix.museumloan.loan;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,6 @@ public class LoanController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> create(@Valid @RequestBody LoanCreateRequest req,
                                      @AuthenticationPrincipal Long userId) {
         try {
@@ -45,7 +43,6 @@ public class LoanController {
     }
 
     @PatchMapping("/{id}/approve")
-    @PreAuthorize("hasRole('REVIEWER')")
     public ResponseEntity<?> approve(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
         try {
             return ResponseEntity.ok(loanService.approve(id, userId));
@@ -55,7 +52,6 @@ public class LoanController {
     }
 
     @PatchMapping("/{id}/reject")
-    @PreAuthorize("hasRole('REVIEWER')")
     public ResponseEntity<?> reject(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
         try {
             return ResponseEntity.ok(loanService.reject(id, userId));
@@ -65,7 +61,6 @@ public class LoanController {
     }
 
     @PatchMapping("/{id}/ship")
-    @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> ship(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
         try {
             return ResponseEntity.ok(loanService.ship(id, userId));
@@ -75,7 +70,6 @@ public class LoanController {
     }
 
     @PatchMapping("/{id}/return")
-    @PreAuthorize("hasRole('MUSEUM')")
     public ResponseEntity<?> returnArtifact(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
         try {
             return ResponseEntity.ok(loanService.returnArtifact(id, userId));
