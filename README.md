@@ -40,10 +40,10 @@ The workflow is governed by a strict **state machine** with three roles, full **
 
 ### 🎯 Loan State Machine
 
-`​``
+```
 PENDING ─┬─► APPROVED ──► SHIPPED ──► RETURNED
          └─► REJECTED
-`​``
+```
 
 - **12 business rules enforced** in `LoanService` (own-museum check, artifact availability, role scoping per transition)
 - **Artifact status transitions**: `AVAILABLE` ↔ `RESERVED` ↔ `ON_LOAN`
@@ -88,7 +88,7 @@ PENDING ─┬─► APPROVED ──► SHIPPED ──► RETURNED
 
 ## 🏗 Architecture
 
-`​``mermaid
+```mermaid
 graph TB
     User[👤 Browser<br/>Angular 19] -->|HTTP :4200| Nginx[nginx<br/>SPA + Proxy]
     Nginx -->|/api/*| Backend[Spring Boot 3.3.5<br/>:8080]
@@ -104,11 +104,11 @@ graph TB
     style Nginx fill:#009639,color:#fff
     style Prom fill:#E6522C,color:#fff
     style Graf fill:#F46800,color:#fff
-`​``
+```
 
 ### Layered Backend
 
-`​``
+```
 com.curatix.museumloan
 ├── auth/          JWT login/register + DTOs
 ├── security/      JwtAuthFilter · JwtService · CustomUserDetailsService
@@ -121,7 +121,7 @@ com.curatix.museumloan
 ├── webhook/       HMAC dispatcher · delivery log
 ├── metrics/       LoanMetrics (Micrometer)
 └── config/        SecurityConfig · OpenApiConfig · SpringContext
-`​``
+```
 
 ### Database Schema (Flyway)
 
@@ -143,12 +143,12 @@ com.curatix.museumloan
 
 ### Run
 
-`​``bash
+```bash
 git clone https://github.com/Eng-MohammadAlShahrour/Curatix-FullStack-SpringBoot-Angular-PostgreSQL-Docker.git
 cd Curatix-FullStack-SpringBoot-Angular-PostgreSQL-Docker
 
 docker compose up -d
-`​``
+```
 
 Wait ~60s for Flyway migrations + JPA validation. Then:
 
@@ -245,9 +245,9 @@ With `spring.jpa.open-in-view=false`, Hibernate's `Session` closes immediately a
 
 **31 JUnit 5 tests** across 5 suites, all `@SpringBootTest` + H2 in-memory DB:
 
-`​``bash
+```bash
 docker compose run --rm backend mvn test
-`​``
+```
 
 | Suite | Tests | Coverage |
 |-------|-------|----------|
