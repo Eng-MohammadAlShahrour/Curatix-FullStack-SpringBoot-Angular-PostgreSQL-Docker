@@ -90,15 +90,13 @@ PENDING ─┬─► APPROVED ──► SHIPPED ──► RETURNED
 
 ```mermaid
 graph TB
-    User[👤 Browser<br/>Angular 19] -->|HTTP :4200| Nginx[nginx<br/>SPA + Proxy]
-    Nginx -->|/api/*| Backend[Spring Boot 3.3.5<br/>:8080]
-    Backend -->|JDBC| DB[(PostgreSQL 16<br/>:5432)]
-    Backend -->|/actuator/prometheus| Prom[Prometheus<br/>:9090]
-    Prom -->|datasource| Graf[Grafana<br/>:3000]
-    
-    Backend -.->|@Async<br/>email| SMTP[(SMTP<br/>MailHog / SES)]
-    Backend -.->|HMAC POST| Webhooks[External<br/>Webhook Receivers]
-    
+    User["Browser Angular 19"] -->|"HTTP 4200"| Nginx["nginx SPA + Proxy"]
+    Nginx -->|"API"| Backend["Spring Boot 3.3.5 :8080"]
+    Backend -->|"JDBC"| DB[("PostgreSQL 16 :5432")]
+    Backend -->|"actuator prometheus"| Prom["Prometheus :9090"]
+    Prom -->|"datasource"| Graf["Grafana :3000"]
+    Backend -.->|"Async email"| SMTP[("SMTP MailHog SES")]
+    Backend -.->|"HMAC POST"| Webhooks["External Webhook Receivers"]
     style Backend fill:#0A2540,color:#fff
     style DB fill:#4169E1,color:#fff
     style Nginx fill:#009639,color:#fff
