@@ -18,6 +18,8 @@
 
 </div>
 
+<p align="center"><img src="docs/screenshots/02-dashboard.png" alt="Curatix Dashboard" width="100%"/></p>
+
 ---
 
 ## 📖 What is Curatix?
