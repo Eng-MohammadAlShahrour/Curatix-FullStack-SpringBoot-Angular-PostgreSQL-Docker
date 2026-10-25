@@ -30,6 +30,30 @@ The workflow is governed by a strict **state machine** with three roles, full **
 
 ---
 
+
+---
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/01-login.png" alt="Login"/><br/><sub><b>Login</b></sub></td>
+    <td width="50%"><img src="docs/screenshots/02-dashboard.png" alt="Dashboard"/><br/><sub><b>Dashboard</b></sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/03-museums.png" alt="Museums"/><br/><sub><b>Museums</b></sub></td>
+    <td width="50%"><img src="docs/screenshots/04-artifacts.png" alt="Artifacts"/><br/><sub><b>Artifacts</b></sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/05-loans.png" alt="Loans"/><br/><sub><b>Loans — State Machine</b></sub></td>
+    <td width="50%"><img src="docs/screenshots/06-users.png" alt="Users"/><br/><sub><b>Admin — Users</b></sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/07-swagger.png" alt="Swagger API"/><br/><sub><b>Swagger API</b></sub></td>
+    <td width="50%"><img src="docs/screenshots/08-grafana.png" alt="Grafana"/><br/><sub><b>Grafana Dashboard</b></sub></td>
+  </tr>
+</table>
+
 ## ✨ Features
 
 ### 🔐 Authentication & Authorization
