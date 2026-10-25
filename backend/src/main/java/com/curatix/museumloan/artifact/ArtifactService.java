@@ -18,14 +18,17 @@ public class ArtifactService {
     private final MuseumRepository museumRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public List<ArtifactDto> listAll() {
         return artifactRepository.findAll().stream().map(ArtifactDto::from).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ArtifactDto> listByMuseum(Long museumId) {
         return artifactRepository.findByMuseumId(museumId).stream().map(ArtifactDto::from).toList();
     }
 
+    @Transactional(readOnly = true)
     public ArtifactDto get(Long id) {
         Artifact a = artifactRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Artifact not found: " + id));

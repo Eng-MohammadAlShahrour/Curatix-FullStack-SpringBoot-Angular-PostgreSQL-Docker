@@ -1,10 +1,9 @@
-﻿package com.curatix.museumloan.config;
+package com.curatix.museumloan.config;
 
 import com.curatix.museumloan.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,8 +27,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
                 .requestMatchers(
+                        "/error",
                         "/api/public/**",
                         "/api/auth/**",
                         "/swagger-ui/**",
@@ -41,17 +40,6 @@ public class SecurityConfig {
                         "/actuator/prometheus",
                         "/actuator/metrics"
                 ).permitAll()
-                // Write operations — URL-based role enforcement
-                .requestMatchers(HttpMethod.POST, "/api/museums").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/artifacts").hasRole("MUSEUM")
-                .requestMatchers(HttpMethod.POST, "/api/loans").hasRole("MUSEUM")
-                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/approve").hasRole("REVIEWER")
-                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/reject").hasRole("REVIEWER")
-                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/ship").hasRole("MUSEUM")
-                .requestMatchers(HttpMethod.PATCH, "/api/loans/*/return").hasRole("MUSEUM")
-                // Admin endpoints (class-level @PreAuthorize still enforced)
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // Everything else requires authentication
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

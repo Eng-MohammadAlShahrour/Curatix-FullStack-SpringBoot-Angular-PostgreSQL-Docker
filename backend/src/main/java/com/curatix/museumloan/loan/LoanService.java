@@ -31,14 +31,17 @@ public class LoanService {
     private final LoanEventPublisher eventPublisher;
     private final LoanMetrics loanMetrics;
 
+    @Transactional(readOnly = true)
     public List<LoanDto> listAll() {
         return loanRepository.findAll().stream().map(LoanDto::from).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<LoanDto> listByStatus(LoanStatus status) {
         return loanRepository.findByStatusOrderByCreatedAtDesc(status).stream().map(LoanDto::from).toList();
     }
 
+    @Transactional(readOnly = true)
     public LoanDto get(Long id) {
         return LoanDto.from(find(id));
     }
